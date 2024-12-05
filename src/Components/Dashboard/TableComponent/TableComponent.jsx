@@ -43,7 +43,7 @@ export default function TableComponent({ tableData, visibleFields }) {
   }));
 
   const rows = tableData.map((row, index) => ({
-    id: index + 1, // Sequentially assign ids for DataGrid
+    id: index + 1,
     ...row,
   }));
 
