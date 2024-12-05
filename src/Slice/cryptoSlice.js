@@ -3,7 +3,6 @@ import axios from 'axios';
 
 const API_URL = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd';
 
-// Thunk to fetch crypto data
 export const fetchCryptoData = createAsyncThunk('crypto/fetchCryptoData', async () => {
     const response = await axios.get(API_URL);
     return response.data;

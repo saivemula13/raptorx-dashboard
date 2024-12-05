@@ -8,8 +8,6 @@ function TableComponent1() {
 
     const [cryptoData, setCryptoData] = useState(apiData)
 
-
-
     console.log(cryptoData);
     return (
         <table>
