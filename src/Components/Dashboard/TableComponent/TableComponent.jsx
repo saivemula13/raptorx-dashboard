@@ -42,13 +42,10 @@ export default function TableComponent({ tableData, visibleFields }) {
     },
   }));
 
-  const rows = tableData.map((row) => {
-    const filteredRow = { id: row.Id }; 
-    visibleFields.forEach((field) => {
-      filteredRow[field] = row[field];
-    });
-    return filteredRow;
-  });
+  const rows = tableData.map((row, index) => ({
+    id: index + 1, // Sequentially assign ids for DataGrid
+    ...row,
+  }));
 
   const paginationModel = { page: 0, pageSize: 10 };
 
@@ -57,7 +54,7 @@ export default function TableComponent({ tableData, visibleFields }) {
       rows={rows}
       columns={columns}
       initialState={{ pagination: { paginationModel } }}
-      pageSizeOptions={[ 10,20]}
+      pageSizeOptions={[10, 20]}
       sx={{ border: 0 }}
       hideFooterSelectedRowCount
     />

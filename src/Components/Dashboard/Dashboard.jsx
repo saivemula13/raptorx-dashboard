@@ -1,29 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { CssBaseline, Switch, Box, Typography, AppBar, Toolbar } from '@mui/material';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Masonry from '@mui/lab/Masonry';
 import TableComponent from './TableComponent/TableComponent';
-import { apiData } from '../ApiData';
 import LineChartComponent from './LineChartComponent/LineChartComponent';
-
+import SummaryCard from './CardComponent/CardComponent';
+import { useSelector } from 'react-redux';
 
 const Dashboard = () => {
-    // Load saved layout from local storage or use the default layout 
-    // const savedLayout = JSON.parse(localStorage.getItem('dashboardLayout')) || [
-    //     { id: '1', content: 'sai Component' },
-    //     { id: '2', content: 'Graph Component' },
-    //     { id: '3', content: 'Summary Card' },
-    // ];
+    const cryptoApiData = useSelector((state) => state.crypto.data);
+    const status = useSelector((state) => state.crypto.status);
+    const error = useSelector((state) => state.crypto.error);
 
-    // const [components, setComponents] = useState(savedLayout);
+    const [components, setComponents] = useState([]);
 
-    // Save the layout to local storage whenever it changes
-    // useEffect(() => {
-    //     localStorage.setItem('dashboardLayout', JSON.stringify(components));
-    // }, [components]);
-
-
+    useEffect(() => {
+        const filteredApiData = cryptoApiData.map((item, index) => ({
+            Id: index + 1,
+            Symbol: item.symbol,
+            Name: item.name,
+            Image: item.image,
+            'Current Price': item.current_price,
+            'Market Capital': item.market_cap,
+            'Market Capital Rank': item.market_cap_rank,
+            'Total Volume': item.total_volume,
+            High: item.high_24h,
+            Low: item.low_24h,
+            'Price Change': item.price_change_24h,
+            'Price Change Percentage': item.price_change_percentage_24h,
+            'Total Supply': item.total_supply,
+            'Max Supply': item.max_supply,
+            Ath: item.ath,
+            'Ath Change Percentage': item.ath_change_percentage,
+            Atl: item.atl,
+            'Atl Change Percentage': item.atl_change_percentage,
+        }));
+        setComponents(filteredApiData);
+    }, [cryptoApiData]);
 
     const [darkMode, setDarkMode] = useState(false);
 
@@ -33,52 +47,32 @@ const Dashboard = () => {
         },
     });
 
-
-
-    let filteredApiData = apiData.map((item, index) => ({
-        "Id": index + 1,
-        "Symbol": item.symbol,
-        "Name": item.name,
-        "Image": item.image,
-        "Current Price": item.current_price,
-        "Market Capital": item.market_cap,
-        "Market Capital Rank": item.market_cap_rank,
-        "Total Volume": item.total_volume,
-        "High": item.high_24h,
-        "Low": item.low_24h,
-        "Price Change": item.price_change_24h,
-        "Price Change Percentage": item.price_change_percentage_24h,
-        "Total Supply": item.total_supply,
-        "Max Supply": item.max_supply,
-        "Ath": item.ath,
-        "Ath Change Percentage": item.ath_change_percentage,
-        "Atl": item.atl,
-        "Atl Change Percentage": item.atl_change_percentage,
-    }))
-
-    const savedLayout = [
-        { id: '1', content: 'Summary Card 1' },
-        { id: '2', content: 'Summary Card 2' },
-        { id: '3', content: 'Summary Card 3' },
-        { id: '4', content: 'Summary Card 4' },
-        { id: '5', content: 'Summary Card 5' },
-        { id: '6', content: 'Summary Card 6' },
-        { id: '7', content: 'Summary Card 7' },
-        { id: '8', content: 'Summary Card 8' },
-
-    ];
-
-    const [components, setComponents] = useState(savedLayout);
-
     const onDragEnd = (result) => {
         if (!result.destination) return;
 
-        const items = Array.from(components);
-        const [reorderedItem] = items.splice(result.source.index, 1);
-        items.splice(result.destination.index, 0, reorderedItem);
+        const reorderedItems = Array.from(components);
+        const [reorderedItem] = reorderedItems.splice(result.source.index, 1);
+        reorderedItems.splice(result.destination.index, 0, reorderedItem);
 
-        setComponents(items);
+        setComponents(reorderedItems);
     };
+
+    const handleRemove = (id) => {
+        const updatedComponents = components.filter((comp) => comp.Id !== id).map((comp, index) => ({
+            ...comp,
+            Id: index + 1,
+        }));
+        setComponents(updatedComponents);
+    };
+
+
+    if (status === 'loading') {
+        return <Typography>Loading...</Typography>;
+    }
+
+    if (status === 'failed') {
+        return <Typography color="error">Failed to load data: {error}</Typography>;
+    }
 
     return (
         <ThemeProvider theme={theme}>
@@ -95,12 +89,14 @@ const Dashboard = () => {
                     />
                 </Toolbar>
             </AppBar>
-            <Box sx={{ padding: "16px" }}>
+
+            <Box sx={{ padding: '16px' }}>
                 <TableComponent
-                    tableData={filteredApiData}
-                    visibleFields={Object.keys(filteredApiData[0])}
+                    tableData={components}
+                    visibleFields={Object.keys(components[0] || {})}
                 />
-                <LineChartComponent data={filteredApiData} />
+                <LineChartComponent data={components} />
+
                 <DragDropContext onDragEnd={onDragEnd}>
                     <Droppable droppableId="dashboard" direction="vertical">
                         {(provided) => (
@@ -115,7 +111,7 @@ const Dashboard = () => {
                             >
                                 <Masonry columns={{ xs: 2, sm: 3 }} spacing={2}>
                                     {components.map((comp, index) => (
-                                        <Draggable key={comp.id} draggableId={comp.id} index={index}>
+                                        <Draggable key={comp.Id} draggableId={String(comp.Id)} index={index}>
                                             {(provided) => (
                                                 <div
                                                     ref={provided.innerRef}
@@ -127,11 +123,15 @@ const Dashboard = () => {
                                                         marginBottom: 8,
                                                         backgroundColor: theme.palette.background.paper,
                                                         borderRadius: 4,
-                                                        boxShadow: `0 1px 3px ${darkMode ? "#fff" : "rgba(0,0,0,0.2)"} `,
+                                                        boxShadow: `0 1px 3px ${darkMode ? '#fff' : 'rgba(0,0,0,0.2)'
+                                                            }`,
                                                         ...provided.draggableProps.style,
                                                     }}
                                                 >
-                                                    {comp.content}
+                                                    <SummaryCard
+                                                        data={comp}
+                                                        onRemove={() => handleRemove(comp.Id)}
+                                                    />
                                                 </div>
                                             )}
                                         </Draggable>
