@@ -1,5 +1,5 @@
 
-# Cryptocurrency Dashboard
+# Raptorx Crypto currency Dashboard
 
 A **real-time cryptocurrency dashboard** built with **React** and **Redux Toolkit**. This project showcases live cryptocurrency data with features like configurable drag-and-drop layouts, data visualization, and persisted user settings.
 
