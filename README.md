@@ -1,70 +1,139 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Cryptocurrency Dashboard
 
-## Available Scripts
+A **real-time cryptocurrency dashboard** built with **React** and **Redux Toolkit**. This project showcases live cryptocurrency data with features like configurable drag-and-drop layouts, data visualization, and persisted user settings.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## **Features**
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 1. **Real-Time Data Updates**
+- Fetches live cryptocurrency data every 5 seconds from the [CoinGecko API](https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd).
+- Displays data such as name, symbol, current price, and market cap.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 2. **Configurable Dashboard**
+- Drag-and-drop layout for dashboard components using `react-beautiful-dnd`.
+- Add, rearrange, and delete components seamlessly.
+- Layout adjustments ensure a clean, balanced design.
 
-### `npm test`
+### 3. **Customizable Components**
+- **Table Component:** Displays cryptocurrency data in a paginated, responsive table with sorting and filtering.
+- **Graph Component:** Visualizes price trends with configurable chart types (e.g., line, bar).
+- **Summary Cards:** Highlights key metrics like highest/lowest prices and market cap.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 4. **Persistent Layout**
+- Saves dashboard layout and user preferences (e.g., theme, component settings) to local storage.
+- Allows users to export and import dashboard configuration as JSON for reusability.
 
-### `npm run build`
+### 5. **Responsive Design**
+- Fully responsive interface adapts to all screen sizes.
+- Ensures smooth UX across devices.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## **Technologies Used**
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **Frontend:** React, Redux Toolkit, React Beautiful DnD
+- **State Management:** Redux Toolkit
+- **Styling:** CSS, Material-UI
+- **Data Fetching:** CoinGecko API
+- **Persistence:** Local Storage
+- **Charting:** Chart.js or any equivalent charting library
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## **Installation**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Prerequisites
+- Node.js (v16 or higher)
+- npm 
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Steps
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/saivemula13/raptorx-dashboard
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd raptorx-dashboard
+   ```
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+4. Start the development server:
+   ```bash
+   npm start
+   ```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+The app will run on [http://localhost:3000](http://localhost:3000).
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## **Usage**
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+1. Open the dashboard in your browser.
+2. View real-time cryptocurrency data in the table.
+3. Drag-and-drop components to rearrange the layout.
+4. Delete unwanted components and see the layout adjust automatically.
+5. Customize settings for individual components.
+6. Export the layout as JSON or import an existing configuration.
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## **File Structure**
 
-### Analyzing the Bundle Size
+```plaintext
+src/
+├── Components/
+│   ├── Assets/         
+│       ├── Images          
+│           ├── SvgIcons.jsx             // Images are stored as Svg
+│   ├── CryptoDataProvider/ 
+│       ├── CryptoDataProvider.js        // Handles data fetching and polling
+│   ├── Dashboard/    
+│       ├── CardComponent/        
+│           ├── CardComponent.js         // Displays cryptocurrency data in a Card
+│       ├── LineChartComponent/        
+│           ├── LineChartComponent.js    // Renders price trend charts
+│       ├── TableComponent/        
+│           ├── TableComponent.js        // Displays cryptocurrency data in a Table
+│       ├── Dashboard.jsx/               // Displays all the Table, 
+├── Slice/
+│   ├── cryptoSlice.js                   // Redux slice for managing cryptocurrency data
+├── App.js                               // Main application entry
+├── index.js                             // Application root
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
+## **API Information**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- **Base URL:** `https://api.coingecko.com/api/v3`
+- **Endpoint Used:**
+  - `/coins/markets?vs_currency=usd`
+- **Data Fetched:**
+  - `id`, `name`, `symbol`, `current_price`, `market_cap`
 
-### Advanced Configuration
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## **Future Enhancements**
 
-### Deployment
+1. Add user authentication for personalized dashboards.
+2. Integrate more data sources for broader cryptocurrency insights.
+3. Enhance visualizations with more charting options.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+---
 
-### `npm run build` fails to minify
+## **License**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+---
+
+## **Contact**
+
+For questions or suggestions, feel free to contact me:
+
+- **Email:** [saijagadeesh.vemula@example.com](mailto:saijagadeesh.vemula@example.com)
+- **GitHub:** [saivemula13](https://github.com/saivemula13)
