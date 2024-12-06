@@ -10,14 +10,23 @@ import { useSelector } from 'react-redux';
 import { Container } from '@mui/system';
 import CircularProgress from '@mui/material/CircularProgress';
 import { MoonIcon, SunIcon } from '../Assets/Image/SvgIcons';
+
 const Dashboard = () => {
     const cryptoApiData = useSelector((state) => state.crypto.data);
     const status = useSelector((state) => state.crypto.status);
     const error = useSelector((state) => state.crypto.error);
 
+    const [tableGraphData, setTableGraphData] = useState([]);
     const [components, setComponents] = useState([]);
     const [darkMode, setDarkMode] = useState(false);
     const [isPreloading, setIsPreloading] = useState(true);
+
+    useEffect(() => {
+        const savedComponents = localStorage.getItem('crypto-dashboard-layout');
+        if (savedComponents) {
+            setComponents(JSON.parse(savedComponents));
+        }
+    }, []);
 
     useEffect(() => {
         const timer = setTimeout(() => setIsPreloading(false), 3000);
@@ -27,8 +36,8 @@ const Dashboard = () => {
     useEffect(() => {
         const filteredApiData = cryptoApiData.map((item, index) => ({
             Id: index + 1,
-            Symbol: item.symbol,
             Name: item.name,
+            Symbol: item.symbol,
             Image: item.image,
             'Current Price': item.current_price,
             'Market Capital': item.market_cap,
@@ -45,7 +54,11 @@ const Dashboard = () => {
             Atl: item.atl,
             'Atl Change Percentage': item.atl_change_percentage,
         }));
-        setComponents(filteredApiData);
+        setTableGraphData(filteredApiData);
+
+        if (!localStorage.getItem('crypto-dashboard-layout')) {
+            setComponents(filteredApiData);
+        }
     }, [cryptoApiData]);
 
     const theme = createTheme({
@@ -62,6 +75,8 @@ const Dashboard = () => {
         reorderedItems.splice(result.destination.index, 0, reorderedItem);
 
         setComponents(reorderedItems);
+
+        localStorage.setItem('crypto-dashboard-layout', JSON.stringify(reorderedItems));
     };
 
     const handleRemove = (id) => {
@@ -70,6 +85,8 @@ const Dashboard = () => {
             Id: index + 1,
         }));
         setComponents(updatedComponents);
+
+        localStorage.setItem('crypto-dashboard-layout', JSON.stringify(updatedComponents));
     };
 
     if (isPreloading) {
@@ -129,13 +146,13 @@ const Dashboard = () => {
                         <Typography variant="h4" sx={{ my: 4, textAlign: 'center' }}>
                             Crypto Data Table
                         </Typography>
-                        <TableComponent tableData={components} visibleFields={Object.keys(components[0] || {})} />
+                        <TableComponent tableData={tableGraphData} visibleFields={Object.keys(tableGraphData[0] || {})} />
                     </Box>
                     <Box sx={{ my: 2 }}>
                         <Typography variant="h4" sx={{ my: 4, textAlign: 'center' }}>
                             Crypto Line Chart
                         </Typography>
-                        <LineChartComponent data={components} />
+                        <LineChartComponent data={tableGraphData} />
                     </Box>
 
                     <DragDropContext onDragEnd={onDragEnd}>
@@ -144,11 +161,11 @@ const Dashboard = () => {
                         </Typography>
                         <Droppable droppableId="dashboard" direction="vertical">
                             {(provided) => (
-                                <div
+                                <Box
                                     {...provided.droppableProps}
                                     ref={provided.innerRef}
-                                    style={{
-                                        padding: 20,
+                                    sx={{
+                                        padding: 3,
                                         background: theme.palette.background.default,
                                         minHeight: 400,
                                     }}
@@ -157,11 +174,11 @@ const Dashboard = () => {
                                         {components.map((comp, index) => (
                                             <Draggable key={comp.Id} draggableId={String(comp.Id)} index={index}>
                                                 {(provided) => (
-                                                    <div
+                                                    <Box
                                                         ref={provided.innerRef}
                                                         {...provided.draggableProps}
                                                         {...provided.dragHandleProps}
-                                                        style={{
+                                                        sx={{
                                                             userSelect: 'none',
                                                             backgroundColor: theme.palette.background.paper,
                                                             borderRadius: 4,
@@ -173,13 +190,13 @@ const Dashboard = () => {
                                                             data={comp}
                                                             onRemove={() => handleRemove(comp.Id)}
                                                         />
-                                                    </div>
+                                                    </Box>
                                                 )}
                                             </Draggable>
                                         ))}
                                         {provided.placeholder}
                                     </Masonry>
-                                </div>
+                                </Box>
                             )}
                         </Droppable>
                     </DragDropContext>

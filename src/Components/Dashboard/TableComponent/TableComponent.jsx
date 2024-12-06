@@ -3,6 +3,15 @@ import { DataGrid } from '@mui/x-data-grid';
 import { Box } from '@mui/material';
 
 export default function TableComponent({ tableData, visibleFields }) {
+  const colorFields = [
+    'Price Change',
+    'Price Change Percentage',
+    'Ath Change Percentage',
+    'Ath',
+    'Atl',
+    'Atl Change Percentage',
+  ];
+
   const columns = visibleFields.map((field) => ({
     field,
     headerName: field,
@@ -25,7 +34,7 @@ export default function TableComponent({ tableData, visibleFields }) {
         );
       }
 
-      if (typeof value === 'number') {
+      if (typeof value === 'number' && colorFields.includes(field)) {
         return (
           <Box
             sx={{
