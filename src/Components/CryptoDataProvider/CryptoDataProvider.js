@@ -8,7 +8,7 @@ const CryptoDataProvider = ({ children }) => {
     useEffect(() => {
         const fetchInterval = setInterval(() => {
             dispatch(fetchCryptoData());
-        }, 5000); 
+        }, 50000); 
 
         dispatch(fetchCryptoData()); 
 
